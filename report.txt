@@ -1,0 +1,58 @@
+-----------------------------------------------------
+Test       Power of ten, 10 seconds input   
+----------------------------------------------------
+Ivec HWX   |  4, 15000     |   
+Ivec OPT   |  4, 70000     |   
+Ivec SYS   |  6, 1000000   |   
+
+List HWX   |  3, 4000      |  
+List OPT   |  4, 50000     |   
+List SYS   |  5, 300000    |   
+
+-----------------------------------------------------
+Test        Time 
+----------------------------------------------------
+Input: 15000
+Ivec HWX   |  10.669s     |   
+Ivec OPT   |  0.433s      | 24.6 times faster than HWX
+
+Input: 4000
+List HWX   |  11.001s     |  
+List OPT   |  0.108s      | 102 times faster than HWX
+
+-----------------------------------------------------
+Test        Time 
+----------------------------------------------------
+Input: 70000
+Ivec OPT   |  11.077s     |   
+Ivec SYS   |  0.397s      | 27.9 times faster than OPT
+
+Input: 50000
+List OPT   |  8.114s      |  
+List SYS   |  1.628s      | 4.369 times faster than OPT
+
+We used buckets, which is an array of freelist pages 
+with each page being a predetermined cell size, a power of 2
+which allows us to pick and choose which size memory 
+bucket we need to allocate.
+
+We coalesce buckets together to create a memory block one 
+size higher.
+
+We handle reusing memory by putting it in a free list, 
+and putting leftover memory in a free list and letting
+the next cell be used to allocate it.
+
+The most significant challenge was actually 
+implementing what we understood. We had a lot of 
+segmentation faults,
+and figuring out how to reuse leftover memory 
+when a cell was allocated.
+
+I would use the same alocator design beacuse of the O(1) 
+allocation 
+and free performance.
+It makes allocating much faster. It also allows us to 
+disregard 
+coaslescing and just reuse blocks
+from the free list.
